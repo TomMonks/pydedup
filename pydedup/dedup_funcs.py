@@ -91,8 +91,6 @@ def read_records(fileName, authorFunc = None):
         print("Error accessing file.  Please make sure that filename is correct.")
         sys.exit()
 
-    
-
     curr_record = []
     likely_details = ()
     all_records = []
