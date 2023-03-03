@@ -3,7 +3,7 @@
 #   Module:         dedupFuncs
 #   Description:    Simple script for removing duplicate EndNote entries
 #   Author:         T.Monks
-#   Python ver:     2.7.2
+#   Python ver:     3.9.15 (upgraded from 2.7.3 on 03/03/23)
 #
 #   Logic:          1. Strip punctuation/whitespace from titles
 #                   2. Remove all matching titles (pass 1)
