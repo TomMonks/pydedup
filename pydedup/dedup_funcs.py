@@ -101,11 +101,12 @@ def read_records(fileName, authorFunc = None):
     authors = ''
     year = 0
     vol = 0
+    start_page = ''
     pages = ''
     
     for line in f:
         
-        # used to be %0
+        # End of record
         if line[0:2] == 'ER':
 
             likely_details_it1 = authors, title, year, journal, pages
@@ -125,30 +126,35 @@ def read_records(fileName, authorFunc = None):
             all_records.append(curr_record)
             curr_record = []
                         
+        # title of article                  
         elif line[0:2] == 'TI':
             
             title = remove_punct(line[3:len(line)-1].lower())
 
+        # journal name
         elif line[0:2] == 'T2':
             
             journal = remove_punct(line[3:len(line)-1].lower())
 
+        # publication year
         elif line[0:2] == 'PY':
            
             year = line[3:len(line)-1]
 
-        elif line[0:2] == '%V':
-            
-            year = line[3:len(line)-1]
-
+        # authors - there may be multiple - concat
         elif line[0:2] == 'AU':
             
             #authors = ''.join([authors, line[3:line.find(',')].lower()])
             authors = ''.join([authors, authorFunc(line[3:])])
 
-        elif line[0:2] == '%P':
+        # start page
+        elif line[0:2] == 'SP':
 
-            pages = line[3:len(line)-1]
+            start_page = line[3:len(line)-1]
+
+        # concat end page with start page
+        elif line[0:2] == 'EP':
+            pages = start_page + '-' + line[3:len(line)-1]
             
         curr_record.append(line)
         
