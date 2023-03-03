@@ -86,7 +86,7 @@ def read_records(fileName, authorFunc = None):
     try:
         f = open(fileName + '.ris', 'r')
     except IOError as e:
-        print "Error accessing file.  Please make sure that filename is correct."#
+        print("Error accessing file.  Please make sure that filename is correct.")
         sys.exit()
 
     
