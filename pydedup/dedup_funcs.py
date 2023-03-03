@@ -29,15 +29,16 @@ def unique_titles(seq, idfun=None):
     seq: list
         List of references
 
-    
     """
     if idfun is None:
         def idfun(x): return x
+
     seen = {}
     unique = Results()
    
     for item in seq:
         marker = idfun(item)
+        print(marker)
         if marker in seen:
             unique.duplicates.append(item)
             continue
@@ -56,7 +57,6 @@ def uniquify(all_records):
     results.append(original)
     
     for i in range(6, 1, -1):
-        print(i)
         results.append(remove_by_criteria(results[len(results) - 1].edit, i))
 
     return results
@@ -72,7 +72,6 @@ def remove_by_criteria(records, c_index):
     for item in records:
 
         li = item[len(item)-c_index]  # this looks at a specific item...
-        print('here')
         if li not in found:
             found.add(li)
             unique.edit.append(item)
