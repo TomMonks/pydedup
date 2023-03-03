@@ -1,0 +1,6 @@
+name: pydedup
+channels:
+  - conda-forge
+dependencies:
+  - pip=22.2.2
+  - python=3.9.15
