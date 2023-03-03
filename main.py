@@ -7,8 +7,22 @@ from pydedup.dedup_funcs import (truncate_first_initial,
                                  unique_titles,
                                  uniquify)
 
-if __name__ == '__main__':
-    duplicates = []
+
+def parse_arguments():
+    '''Parse command line arguments.
+
+    Cmd Parameters:
+    ---------------
+    -title_only: dedpup using title only
+  
+    Returns:
+    -------
+    Tuple (str, object, bool)
+    
+    0: the file name containing the references
+    1: the function use to parse author names
+    2: True = title only; False = mroe complex dedup!?
+    '''
     if len(sys.argv) == 1:
         print("Please enter a filename to deduplicate")
         sys.exit()
@@ -28,10 +42,15 @@ if __name__ == '__main__':
             print("Option {0} not recognised".format(sys.argv[item]))
             sys.exit()
 
+    return file_name, author_func, title_only
+
+
+if __name__ == '__main__':
+    duplicates = []
+    file_name, author_func, title_only = parse_arguments()
 
     print('Reading records...')
     all_records = read_records(file_name[:-4], author_func)
-
     print(str(len(all_records)) + ' records found')
 
     total_dups = 0
