@@ -1,12 +1,9 @@
 import sys
 
-from pydedup.dedup_funcs import (truncate_first_initial, 
-                                 truncate_surname,
-                                 read_records,
-                                 output_records,
-                                 unique_titles,
-                                 uniquify)
-
+# pydedup imports
+from pydedup.dedup_funcs import (unique_titles,uniquify)
+from pydedup.io import read_records, output_records
+from pydedup.string_manip import truncate_surname, truncate_first_initial
 
 def parse_arguments():
     '''Parse command line arguments.
