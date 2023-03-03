@@ -1,7 +1,7 @@
 import sys
 
 # pydedup imports
-from pydedup.dedup_funcs import (unique_titles,uniquify)
+from pydedup.dedup_funcs import (unique_titles)
 from pydedup.io import read_records, output_records
 from pydedup.string_manip import truncate_surname, truncate_first_initial
 
@@ -26,13 +26,11 @@ def parse_arguments():
 
     file_name = sys.argv[1]
     author_func = truncate_surname
-    title_only = False
+    title_only = True
 
     for item in range(2, len(sys.argv)):
         if sys.argv[item] == '-initial':
-            author_func = truncate_first_initial
-        elif sys.argv[item] == '-title':
-            title_only = True
+            author_func = truncate_first_initial            
         elif sys.argv[item] == '-authorall':
             author_func == None
         else:
@@ -58,22 +56,6 @@ if __name__ == '__main__':
         output_records(file_name[:-4], "edit", edited_records.edit)
         output_records(file_name[:-4], "dups", edited_records.duplicates)
         total_dups = len(edited_records.duplicates)
-        
-    else:
-        
-        print('Running...')
-        results = uniquify(all_records)
-        
-        remaining = 0
-
-        for i in range(1, len(results)):
-            output_records(file_name[:-4], 'Iteration' + str(i), results[i].edit)
-            print('it {0} - duplicates: {1}\tremaining: {2}'.format(i, len(results[i].duplicates), len(results[i].edit)))
-            total_dups += len(results[i].duplicates)
-            
+                    
     print('deduplication complete.')
     print('duplicates: {0}'.format(total_dups))
-
-
-    #print 'duplicates removed: ', len(edited_records.duplicates)
-    #print 'Possible duplicates: ', len(likely_dups)
