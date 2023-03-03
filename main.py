@@ -1,5 +1,5 @@
 import sys
-from dedupFuncs import *
+from pydedup.dedup_funcs import *
 
 if __name__ == '__main__':
     duplicates = []
