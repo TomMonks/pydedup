@@ -24,7 +24,9 @@ class Results:
         
 def remove_punct(title):
     """ Strip white space and punctuation from string return edited string"""
-    s = title.translate(string.maketrans("",""), string.punctuation)
+    # python 2.7 code s = title.translate(string.maketrans("",""), string.punctuation)
+    # python 3.9 update
+    s = title.translate(str.maketrans('', '', string.punctuation))
     return s.replace(' ', '')
 
 
