@@ -1,5 +1,11 @@
 import sys
-from pydedup.dedup_funcs import *
+
+from pydedup.dedup_funcs import (truncate_first_initial, 
+                                 truncate_surname,
+                                 read_records,
+                                 output_records,
+                                 unique_titles,
+                                 uniquify)
 
 if __name__ == '__main__':
     duplicates = []
@@ -7,35 +13,35 @@ if __name__ == '__main__':
         print("Please enter a filename to deduplicate")
         sys.exit()
 
-    fileName = sys.argv[1]
-    authorFunc = truncate_surname
-    titleOnly = 0
+    file_name = sys.argv[1]
+    author_func = truncate_surname
+    title_only = 0
 
 
     for item in range(2, len(sys.argv)):
         if sys.argv[item] == '-initial':
-            authorFunc = truncate_first_initial
+            author_func = truncate_first_initial
         elif sys.argv[item] == '-title':
-            titleOnly = 1
+            title_only = 1
         elif sys.argv[item] == '-authorall':
-            authorFunc == None
+            author_func == None
         else:
             print("Option {0} not recognised".format(sys.argv[item]))
             sys.exit()
 
 
     print('Reading records...')
-    all_records = read_records(fileName[:-4], authorFunc)
+    all_records = read_records(file_name[:-4], author_func)
 
     print(str(len(all_records)) + ' records found')
 
     total_dups = 0
 
-    if titleOnly == 1:
+    if title_only == 1:
         print('Excluding duplicate titles...')
         edited_records = unique_titles(all_records, lambda x: x[len(x)-1:][0])
-        output_records(fileName[:-4], "edit", edited_records.edit)
-        output_records(fileName[:-4], "dups", edited_records.duplicates)
+        output_records(file_name[:-4], "edit", edited_records.edit)
+        output_records(file_name[:-4], "dups", edited_records.duplicates)
         total_dups = len(edited_records.duplicates)
         
     else:
@@ -46,7 +52,7 @@ if __name__ == '__main__':
         remaining = 0
 
         for i in range(1, len(results)):
-            output_records(fileName[:-4], 'Iteration' + str(i), results[i].edit)
+            output_records(file_name[:-4], 'Iteration' + str(i), results[i].edit)
             print('it {0} - duplicates: {1}\tremaining: {2}'.format(i, len(results[i].duplicates), len(results[i].edit)))
             total_dups += len(results[i].duplicates)
             
