@@ -15,14 +15,13 @@ if __name__ == '__main__':
 
     file_name = sys.argv[1]
     author_func = truncate_surname
-    title_only = 0
-
+    title_only = False
 
     for item in range(2, len(sys.argv)):
         if sys.argv[item] == '-initial':
             author_func = truncate_first_initial
         elif sys.argv[item] == '-title':
-            title_only = 1
+            title_only = True
         elif sys.argv[item] == '-authorall':
             author_func == None
         else:
@@ -37,7 +36,7 @@ if __name__ == '__main__':
 
     total_dups = 0
 
-    if title_only == 1:
+    if title_only:
         print('Excluding duplicate titles...')
         edited_records = unique_titles(all_records, lambda x: x[len(x)-1:][0])
         output_records(file_name[:-4], "edit", edited_records.edit)
