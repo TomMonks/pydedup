@@ -41,6 +41,7 @@ def read_records(fileName, authorFunc = None):
             likely_details_it4 = authors, title, year
             likely_details_it5 = title, journal
             
+            
             curr_record.append(likely_details_it1)
             curr_record.append(likely_details_it2)
             curr_record.append(likely_details_it3)

@@ -38,7 +38,6 @@ def unique_titles(seq, idfun=None):
    
     for item in seq:
         marker = idfun(item)
-        print(marker)
         if marker in seen:
             unique.duplicates.append(item)
             continue
@@ -46,8 +45,6 @@ def unique_titles(seq, idfun=None):
         unique.edit.append(item)
 
     return unique
-
-
 
 def uniquify(all_records):
     """ Uniquify a reference list using a iterative approach return list of Result objects """
@@ -61,13 +58,11 @@ def uniquify(all_records):
 
     return results
 
-
 def remove_by_criteria(records, c_index):
     """ Remove duplicates using criteria list return Results object"""
     found = set()
     likely_dups = []
     unique = Results()
-    
     
     for item in records:
 
@@ -80,9 +75,7 @@ def remove_by_criteria(records, c_index):
             
     return unique
             
-
 class DedupFuncContainer():
     """Container for deduplication preferences"""
     def __init__(self):
         self.authorFunc = truncate_surname
-    

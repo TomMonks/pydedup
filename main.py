@@ -4,6 +4,7 @@ import sys
 from pydedup.dedup_funcs import (unique_titles)
 from pydedup.io import read_records, output_records
 from pydedup.string_manip import truncate_surname, truncate_first_initial
+from pydedup import __version__
 
 def parse_arguments():
     '''Parse command line arguments.
@@ -51,23 +52,32 @@ def parse_arguments():
     return file_name, author_func, match_func
 
 if __name__ == '__main__':
-    duplicates = []
     file_name, author_func, match_func = parse_arguments()
 
-    print('Reading records...')
+    print(f'PyDeDup v{__version__}')
+    print('** Reading records...')
     all_records = read_records(file_name[:-4], author_func)
-    print(str(len(all_records)) + ' records found')
-
-    total_dups = 0
-
-    #if title_only:
-    print('Excluding duplicate titles...')
+   
+    print('** Excluding duplicate titles...')
     edited_records = unique_titles(all_records, match_func)
-    # (title, journal)
-    #edited_records = unique_titles(all_records, lambda x: x[-2:][0])
+                        
+    print('** Deduplication complete.')
+
+    print('** Writing edited and duplicates to file.')
+    # save edited ris and list of duplicates.
     output_records(file_name[:-4], "edit", edited_records.edit)
     output_records(file_name[:-4], "dups", edited_records.duplicates)
+    print('** Complete.')
+
+    original_n = len(all_records)
     total_dups = len(edited_records.duplicates)
-                    
-    print('deduplication complete.')
-    print('duplicates: {0}'.format(total_dups))
+    remaining = len(edited_records.edit)
+    per_dups = (total_dups / original_n) * 100
+    per_remaining = (remaining / original_n) * 100
+
+    
+    print(f'\noriginal\t: {original_n}')
+    print(f'duplicates\t: {total_dups}({per_dups:.1f}%)')
+    print(f'remaining\t: {remaining}({per_remaining:.1f}%)\n')
+
+
