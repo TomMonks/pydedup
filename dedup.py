@@ -4,7 +4,7 @@ from dedupFuncs import *
 
 duplicates = []
 if len(sys.argv) == 1:
-    print "Please enter a filename to deduplicate"
+    print("Please enter a filename to deduplicate")
     sys.exit()
 
 fileName = sys.argv[1]
@@ -20,19 +20,19 @@ for item in range(2, len(sys.argv)):
     elif sys.argv[item] == '-authorall':
         authorFunc == None
     else:
-        print "Option {0} not recognised".format(sys.argv[item])
+        print("Option {0} not recognised".format(sys.argv[item]))
         sys.exit()
 
 
-print 'Reading records...'
+print('Reading records...')
 all_records = read_records(fileName[:-4], authorFunc)
 
-print str(len(all_records)) + ' records found'
+print(str(len(all_records)) + ' records found')
 
 total_dups = 0
 
 if titleOnly == 1:
-    print 'Excluding duplicate titles...'
+    print('Excluding duplicate titles...')
     edited_records = unique_titles(all_records, lambda x: x[len(x)-1:][0])
     output_records(fileName[:-4], "edit", edited_records.edit)
     output_records(fileName[:-4], "dups", edited_records.duplicates)
@@ -40,18 +40,18 @@ if titleOnly == 1:
     
 else:
     
-    print 'Running...'
+    print('Running...')
     results = uniquify(all_records)
     
     remaining = 0
 
     for i in range(1, len(results)):
         output_records(fileName[:-4], 'Iteration' + str(i), results[i].edit)
-        print 'it {0} - duplicates: {1}\tremaining: {2}'.format(i, len(results[i].duplicates), len(results[i].edit))
+        print('it {0} - duplicates: {1}\tremaining: {2}'.format(i, len(results[i].duplicates), len(results[i].edit)))
         total_dups += len(results[i].duplicates)
         
-print 'deduplication complete.'
-print 'duplicates: {0}'.format(total_dups)
+print('deduplication complete.')
+print('duplicates: {0}'.format(total_dups))
 
 
 #print 'duplicates removed: ', len(edited_records.duplicates)
