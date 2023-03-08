@@ -21,7 +21,7 @@ class Results:
         self.duplicates = []
         self.edit = []
         
-def unique_titles(seq, idfun=None):
+def unique_titles(seq, idfun=None, seen=None):
     """ Dedup using title field return Results object 
     
     Params:
@@ -29,11 +29,19 @@ def unique_titles(seq, idfun=None):
     seq: list
         List of references
 
+    idfun: object, optional (default=None)
+        The function to match the duplicates e.g. (title, journal)
+    
+    seen: dict, optional (default=None)
+        A pre-populated list of seen references.
+
     """
     if idfun is None:
         def idfun(x): return x
 
-    seen = {}
+    if seen is None:
+        seen = {}
+
     unique = Results()
    
     for item in seq:
@@ -45,6 +53,32 @@ def unique_titles(seq, idfun=None):
         unique.edit.append(item)
 
     return unique
+
+
+def merge_unique(seq, to_merge, idfun=None):
+    """ Dedup using match function and merge results
+    return Results object 
+    
+    Params:
+    ------
+    seq: list
+        List of references
+
+    to_merge: the candidate references to merge.
+
+    """
+    if idfun is None:
+        def idfun(x): return x
+
+    seen = {}
+   
+    # all records from 
+    for item in seq:
+        seen[idfun(item)] = 1
+
+    # return unique values by passing in pre-populated list of seen refs
+    return unique_titles(to_merge, idfun, seen)
+
 
 def uniquify(all_records):
     """ Uniquify a reference list using a iterative approach return list of Result objects """

@@ -64,7 +64,7 @@ def adv_parse_arguments():
     author_func = truncate_surname
 
     # file used if updating a search
-    update_file_name = ''
+    update_file_name = None
 
     # duplicate matching function
     # -1: (title)
@@ -95,6 +95,10 @@ if __name__ == '__main__':
     print(f'PyDeDup v{__version__}')
     print('** Reading records...')
     all_records = read_records(file_name[:-4], author_func)
+
+    if update_file_name is not None:
+        print('** Reading records to MERGE...')
+        to_merge = read_records(update_file_name[:-4], author_func)
    
     print('** Excluding duplicate titles...')
     edited_records = unique_titles(all_records, match_func)
