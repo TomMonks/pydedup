@@ -1,4 +1,5 @@
 import sys
+import argparse
 
 # pydedup imports
 from pydedup.dedup_funcs import (unique_titles)
@@ -6,27 +7,64 @@ from pydedup.io import read_records, output_records
 from pydedup.string_manip import truncate_surname, truncate_first_initial
 from pydedup import __version__
 
-def parse_arguments():
+def adv_parse_arguments():
     '''Parse command line arguments.
 
-    Cmd Parameters:
+    match options:
     ---------------
-    -title_only: dedpup using title only
-  
+    default: dedpup using title only
+    -tj: (title, journal)
+    -atj: (author, title, journal)
+    -i: use 1st author initial only
+    -a: use all authors in match
+
     Returns:
     -------
-    Tuple (str, object, bool)
+    Tuple (str, object, bool, str)
     
     0: the file name containing the references
     1: the function use to parse author names
-    2: True = title only; False = mroe complex dedup!?
+    2: the function used to match the duplicates.
+    3: the file name containing references to MERGE.
     '''
-    if len(sys.argv) == 1:
-        print("Please enter a filename to deduplicate")
-        sys.exit()
+    # Construct the argument parser and parse the arguments
+    arg_desc = '''\
+            Deduplicate academic references easily!
+            --------------------------------
+                Deduplicate combined searches or 
+                return update a search and only return
+                new unique references.
+            
+            '''
+    parser = argparse.ArgumentParser(formatter_class = argparse.RawDescriptionHelpFormatter,
+                                     description= arg_desc)
+
+    parser.add_argument("file", metavar="FILE", 
+                        help = "Path to your main input RIS file")
+    
+    parser.add_argument("-u", "--update", metavar="UPDATE", 
+                        help = "Path to your file that contains an updated search.")
+
+    parser.add_argument("-tj", "--title-journal", action='store_true',
+                        help = "Deduplicate using both the title and the journal")
+
+    # store true will save True for constant if included.  Default is False
+    parser.add_argument("-aty", "--author-title-year", 
+                        help = "Deduplicate using both the AUTHOR, TITLE AND YEAR.", action='store_true')
+
+    parser.add_argument("-i", "--initial", 
+                    help = "Trim first author to initials only.",  action='store_true')
+
+    parser.add_argument("-a", "--author-all", 
+                    help = "Use all authors as part of dedup.",  action='store_true')
+
+    args = vars(parser.parse_args())
 
     file_name = sys.argv[1]
     author_func = truncate_surname
+
+    # file used if updating a search
+    update_file_name = ''
 
     # duplicate matching function
     # -1: (title)
@@ -35,24 +73,24 @@ def parse_arguments():
     # by default use title only...
     match_func = lambda x: x[-1:][0]
 
-    for item in range(2, len(sys.argv)):
-        if sys.argv[item] == '--initial':
-            author_func = truncate_first_initial            
-        elif sys.argv[item] == '--authorall':
-            author_func == None
-        # match by title and journal name
-        elif sys.argv[item] == '--tj':
-            match_func = lambda x: x[-2:][0]
-        elif sys.argv[item] == '--aty':
-            match_func = lambda x: x[-3:][0]
-        else:
-            print("Option {0} not recognised".format(sys.argv[item]))
-            sys.exit()
+    if args['initial']:
+        author_func = truncate_first_initial            
+    if args['author_all']:
+        author_func == None
+    # match by title and journal name
+    if args['title_journal']:
+        match_func = lambda x: x[-2:][0]
+    if args['author_title_year']:
+        match_func = lambda x: x[-3:][0]
+    if args['update']:
+        # performing a merge return unique records from merge datafile.
+        update_file_name = args['update']
 
-    return file_name, author_func, match_func
+    return file_name, author_func, match_func, update_file_name
 
 if __name__ == '__main__':
-    file_name, author_func, match_func = parse_arguments()
+    file_name, author_func, match_func, update_file_name \
+            = adv_parse_arguments()
 
     print(f'PyDeDup v{__version__}')
     print('** Reading records...')
@@ -75,7 +113,6 @@ if __name__ == '__main__':
     per_dups = (total_dups / original_n) * 100
     per_remaining = (remaining / original_n) * 100
 
-    
     print(f'\noriginal\t: {original_n}')
     print(f'duplicates\t: {total_dups}({per_dups:.1f}%)')
     print(f'remaining\t: {remaining}({per_remaining:.1f}%)\n')

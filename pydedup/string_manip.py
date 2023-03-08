@@ -9,7 +9,8 @@ def remove_punct(title):
     # python 2.7 code s = title.translate(string.maketrans("",""), string.punctuation)
     # python 3.9 updatetype
     # adds in '\u2013' (long dash from unicode) to the punc as this sometimes appears in ris.
-    s = title.translate(str.maketrans('', '', string.punctuation + '\u2013'))
+    # adds in '\u2019' (unicode `) to the punc as this sometimes appears in ris.
+    s = title.translate(str.maketrans('', '', string.punctuation + '\u2019' + '\u2013'))
     return s.replace(' ', '')
 
 def truncate_first_initial(author):
