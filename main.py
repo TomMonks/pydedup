@@ -2,7 +2,7 @@ import sys
 import argparse
 
 # pydedup imports
-from pydedup.dedup_funcs import (unique_titles)
+from pydedup.dedup_funcs import (unique_titles, merge_unique)
 from pydedup.io import read_records, output_records
 from pydedup.string_manip import truncate_surname, truncate_first_initial
 from pydedup import __version__
@@ -92,17 +92,19 @@ if __name__ == '__main__':
     file_name, author_func, match_func, update_file_name \
             = adv_parse_arguments()
 
-    print(f'PyDeDup v{__version__}')
+    print(f'\nPyDeDup v{__version__}')
     print('** Reading records...')
     all_records = read_records(file_name[:-4], author_func)
 
-    if update_file_name is not None:
+    print('** Excluding duplicate titles...')
+    if update_file_name is None:     
+        edited_records = unique_titles(all_records, match_func)
+
+    else:
         print('** Reading records to MERGE...')
         to_merge = read_records(update_file_name[:-4], author_func)
-   
-    print('** Excluding duplicate titles...')
-    edited_records = unique_titles(all_records, match_func)
-                        
+        edited_records = merge_unique(all_records, to_merge, match_func)
+
     print('** Deduplication complete.')
 
     print('** Writing edited and duplicates to file.')
@@ -111,13 +113,22 @@ if __name__ == '__main__':
     output_records(file_name[:-4], "dups", edited_records.duplicates)
     print('** Complete.')
 
+    # number o
     original_n = len(all_records)
+
     total_dups = len(edited_records.duplicates)
     remaining = len(edited_records.edit)
     per_dups = (total_dups / original_n) * 100
     per_remaining = (remaining / original_n) * 100
 
     print(f'\noriginal\t: {original_n}')
+    # number of candidates to merge
+    if update_file_name is not None:
+        merge_n = len(to_merge)
+        print(f'merge refs\t: {merge_n}')
+
+        per_dups = (total_dups / merge_n) * 100
+        per_remaining = (remaining / merge_n) * 100
     print(f'duplicates\t: {total_dups}({per_dups:.1f}%)')
     print(f'remaining\t: {remaining}({per_remaining:.1f}%)\n')
 

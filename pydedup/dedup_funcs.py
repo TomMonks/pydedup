@@ -74,7 +74,8 @@ def merge_unique(seq, to_merge, idfun=None):
    
     # all records from 
     for item in seq:
-        seen[idfun(item)] = 1
+        marker = idfun(item)
+        seen[marker] = 1
 
     # return unique values by passing in pre-populated list of seen refs
     return unique_titles(to_merge, idfun, seen)
